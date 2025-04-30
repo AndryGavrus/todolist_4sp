@@ -1,5 +1,5 @@
 import "./App.css"
-import { selectThemeMode } from "@/app/app-slice.ts"
+import { selectThemeMode } from "@/app/app-slice"
 import { Main } from "@/app/Main"
 import { Header } from "@/common/components/Header/Header"
 import { useAppSelector } from "@/common/hooks"

@@ -1,14 +1,20 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit"
-import { createTodolistTC, deleteTodolistTC } from "./todolists-slice";
+import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
 
 export const tasksSlice = createSlice({
   name: "tasks",
-  initialState: {
-    // [1]: [],
-    // [todoId]: [{taskId, title},{taskId, title}],
-  } as TasksState,
+  initialState: {} as TasksState,
   selectors: {
-    selectTasks: state => state,
+    selectTasks: (state) => state,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createTodolistTC.fulfilled, (state, action) => {
+        state[action.payload.todolist.id] = []
+      })
+      .addCase(deleteTodolistTC.fulfilled, (state, action) => {
+        delete state[action.payload.id]
+      })
   },
   reducers: (create) => ({
     deleteTaskAC: create.reducer<{ todolistId: string; taskId: string }>((state, action) => {
@@ -35,20 +41,11 @@ export const tasksSlice = createSlice({
       }
     }),
   }),
-  extraReducers: (builder) => {
-    builder
-      .addCase(createTodolistTC.fulfilled, (state, action) => {
-        state[action.payload.todolist.id] = []
-      })
-      .addCase(deleteTodolistTC.fulfilled, (state, action) => {
-        delete state[action.payload.id]
-      })
-  },
 })
 
+export const { selectTasks } = tasksSlice.selectors
+export const { deleteTaskAC, createTaskAC, changeTaskStatusAC, changeTaskTitleAC } = tasksSlice.actions
 export const tasksReducer = tasksSlice.reducer
-export const { changeTaskStatusAC, changeTaskTitleAC, createTaskAC, deleteTaskAC } = tasksSlice.actions
-export const {selectTasks} = tasksSlice.selectors
 
 export type Task = {
   id: string
