@@ -4,10 +4,10 @@ import {
   changeTaskTitleAC,
   createTaskAC,
   deleteTaskAC,
-  tasksSlice,
+  tasksReducer,
   type TasksState,
-} from "../tasks-slice"
-import { createTodolistAC, deleteTodolistAC } from "../todolists-slice"
+} from "../tasks-reducer"
+import { createTodolistAC, deleteTodolistAC } from "../todolists-reducer"
 
 let startState: TasksState = {}
 
@@ -27,7 +27,7 @@ beforeEach(() => {
 })
 
 test("correct task should be deleted", () => {
-  const endState = tasksSlice(startState, deleteTaskAC({ todolistId: "todolistId2", taskId: "2" }))
+  const endState = tasksReducer(startState, deleteTaskAC({ todolistId: "todolistId2", taskId: "2" }))
 
   expect(endState).toEqual({
     todolistId1: [
@@ -43,7 +43,7 @@ test("correct task should be deleted", () => {
 })
 
 test("correct task should be created at correct array", () => {
-  const endState = tasksSlice(
+  const endState = tasksReducer(
     startState,
     createTaskAC({
       todolistId: "todolistId2",
@@ -59,7 +59,7 @@ test("correct task should be created at correct array", () => {
 })
 
 test("correct task should change its status", () => {
-  const endState = tasksSlice(
+  const endState = tasksReducer(
     startState,
     changeTaskStatusAC({ todolistId: "todolistId2", taskId: "2", isDone: false }),
   )
@@ -69,7 +69,7 @@ test("correct task should change its status", () => {
 })
 
 test("correct task should change its title", () => {
-  const endState = tasksSlice(
+  const endState = tasksReducer(
     startState,
     changeTaskTitleAC({ todolistId: "todolistId2", taskId: "2", title: "coffee" }),
   )
@@ -79,7 +79,7 @@ test("correct task should change its title", () => {
 })
 
 test("array should be created for new todolist", () => {
-  const endState = tasksSlice(startState, createTodolistAC("New todolist"))
+  const endState = tasksReducer(startState, createTodolistAC("New todolist"))
 
   const keys = Object.keys(endState)
   const newKey = keys.find((k) => k !== "todolistId1" && k !== "todolistId2")
@@ -92,7 +92,7 @@ test("array should be created for new todolist", () => {
 })
 
 test("property with todolistId should be deleted", () => {
-  const endState = tasksSlice(startState, deleteTodolistAC({ id: "todolistId2" }))
+  const endState = tasksReducer(startState, deleteTodolistAC({ id: "todolistId2" }))
 
   const keys = Object.keys(endState)
 
