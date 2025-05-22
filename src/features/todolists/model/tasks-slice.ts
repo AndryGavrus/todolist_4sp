@@ -1,22 +1,10 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit"
-import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
+import { createTodolistAC, deleteTodolistAC } from "./todolists-slice"
 
 export const tasksSlice = createSlice({
   name: "tasks",
   initialState: {} as TasksState,
-  selectors: {
-    selectTasks: (state) => state,
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(createTodolistTC.fulfilled, (state, action) => {
-        state[action.payload.todolist.id] = []
-      })
-      .addCase(deleteTodolistTC.fulfilled, (state, action) => {
-        delete state[action.payload.id]
-      })
-  },
-  reducers: (create) => ({
+  reducers: create => ({
     deleteTaskAC: create.reducer<{ todolistId: string; taskId: string }>((state, action) => {
       const tasks = state[action.payload.todolistId]
       const index = tasks.findIndex((task) => task.id === action.payload.taskId)
@@ -39,13 +27,60 @@ export const tasksSlice = createSlice({
       if (task) {
         task.title = action.payload.title
       }
-    }),
+    })
   }),
+  extraReducers: builder => {
+    builder
+      .addCase(createTodolistAC, (state, action) => {
+      state[action.payload.id] = []
+    })
+    .addCase(deleteTodolistAC, (state, action) => {
+      delete state[action.payload.id]
+    })
+  }
 })
 
-export const { selectTasks } = tasksSlice.selectors
-export const { deleteTaskAC, createTaskAC, changeTaskStatusAC, changeTaskTitleAC } = tasksSlice.actions
+export const {changeTaskStatusAC, changeTaskTitleAC, createTaskAC, deleteTaskAC} = tasksSlice.actions
 export const tasksReducer = tasksSlice.reducer
+
+// export const changeTaskTitleAC = createAction<{ todolistId: string; taskId: string; title: string }>(
+//   "tasks/changeTaskTitle",
+// )
+
+// const initialState: TasksState = {}
+
+// export const tasksReducer = createReducer(initialState, (builder) => {
+//   builder
+// .addCase(deleteTaskAC, (state, action) => {
+//   const tasks = state[action.payload.todolistId]
+//   const index = tasks.findIndex((task) => task.id === action.payload.taskId)
+//   if (index !== -1) {
+//     tasks.splice(index, 1)
+//   }
+//     })
+// .addCase(createTaskAC, (state, action) => {
+//   const newTask: Task = { title: action.payload.title, isDone: false, id: nanoid() }
+//   state[action.payload.todolistId].unshift(newTask)
+// })
+// .addCase(changeTaskStatusAC, (state, action) => {
+//   const task = state[action.payload.todolistId].find((task) => task.id === action.payload.taskId)
+//   if (task) {
+//     task.isDone = action.payload.isDone
+//   }
+// })
+// .addCase(changeTaskTitleAC, (state, action) => {
+//   const task = state[action.payload.todolistId].find((task) => task.id === action.payload.taskId)
+//   if (task) {
+//     task.title = action.payload.title
+//   }
+// })
+    // .addCase(createTodolistAC, (state, action) => {
+    //   state[action.payload.id] = []
+    // })
+    // .addCase(deleteTodolistAC, (state, action) => {
+    //   delete state[action.payload.id]
+    // })
+// })
 
 export type Task = {
   id: string
