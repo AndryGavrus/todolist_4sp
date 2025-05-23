@@ -32,16 +32,18 @@ export const tasksSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(createTodolistAC, (state, action) => {
-      state[action.payload.id] = []
-    })
-    .addCase(deleteTodolistAC, (state, action) => {
-      delete state[action.payload.id]
-    })
-  }
+        state[action.payload.id] = []
+      })
+      .addCase(deleteTodolistAC, (state, action) => {
+        delete state[action.payload.id]
+      })
+  },
+  selectors: { selectTasks: state => state }
 })
 
-export const {changeTaskStatusAC, changeTaskTitleAC, createTaskAC, deleteTaskAC} = tasksSlice.actions
+export const { changeTaskStatusAC, changeTaskTitleAC, createTaskAC, deleteTaskAC } = tasksSlice.actions
 export const tasksReducer = tasksSlice.reducer
+export const {selectTasks} = tasksSlice.selectors
 
 // export const changeTaskTitleAC = createAction<{ todolistId: string; taskId: string; title: string }>(
 //   "tasks/changeTaskTitle",
@@ -74,12 +76,12 @@ export const tasksReducer = tasksSlice.reducer
 //     task.title = action.payload.title
 //   }
 // })
-    // .addCase(createTodolistAC, (state, action) => {
-    //   state[action.payload.id] = []
-    // })
-    // .addCase(deleteTodolistAC, (state, action) => {
-    //   delete state[action.payload.id]
-    // })
+// .addCase(createTodolistAC, (state, action) => {
+//   state[action.payload.id] = []
+// })
+// .addCase(deleteTodolistAC, (state, action) => {
+//   delete state[action.payload.id]
+// })
 // })
 
 export type Task = {

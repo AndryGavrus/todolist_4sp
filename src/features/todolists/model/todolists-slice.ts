@@ -1,9 +1,22 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit"
+import { todolistsApi } from "../api/todolistsApi";
+import { Todolist } from "../api/todolistsApi.types";
 
 
 export const todolistsSlice = createSlice({
   name: "todolists",
-  initialState: [] as Todolist[],
+  initialState: [] as DomainTodolist[],
+  extraReducers: builder => {
+    builder
+      .addCase(fetchTodolistsTC.fulfilled, (state, action) => {
+        action.payload?.todolists.forEach((tl) => {
+          state.push({ ...tl, filter: "all" })
+        })
+      })
+      .addCase(fetchTodolistsTC.rejected, (state, action) => {
+        // обработка ошибки при запросе за тудулистами
+      })
+  },
   reducers: create => ({
     deleteTodolistAC: create.reducer<{ id: string }>((state, action) => {
       const index = state.findIndex((todolist) => todolist.id === action.payload.id)
@@ -25,18 +38,31 @@ export const todolistsSlice = createSlice({
     }),
     createTodolistAC: create.preparedReducer((title: string) => ({ payload: { title, id: nanoid() } }),
       (state, action) => {
-        state.push({ ...action.payload, filter: "all" })
+        state.push({ ...action.payload, filter: 'all', addedDate: '', order: 0 })
       }
     )
-  })
+  }),
+  selectors: { selectTodolists: state => state }
 })
+
+export const fetchTodolistsTC = createAsyncThunk(
+  `${todolistsSlice.name}/fetchTodolistsTC`,
+  async (_, thunkAPI) => {
+    try {
+      const res = await todolistsApi.getTodolists()
+      return { todolists: res.data }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error)
+    }
+  }
+)
 
 export const { changeTodolistFilterAC, changeTodolistTitleAC, createTodolistAC, deleteTodolistAC } = todolistsSlice.actions
 export const todolistsReducer = todolistsSlice.reducer
+export const { selectTodolists } = todolistsSlice.selectors
 
-export type Todolist = {
-  id: string
-  title: string
+
+export type DomainTodolist = Todolist & {
   filter: FilterValues
 }
 
