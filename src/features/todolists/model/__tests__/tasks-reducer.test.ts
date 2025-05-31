@@ -7,7 +7,7 @@ import {
   tasksReducer,
   type TasksState,
 } from "../tasks-slice"
-import { createTodolistAC, deleteTodolistAC } from "../todolists-slice"
+import { createTodolistTC, deleteTodolistTC } from "../todolists-slice"
 
 let startState: TasksState = {}
 
@@ -45,7 +45,7 @@ test("correct task should be deleted", () => {
 test("correct task should be created at correct array", () => {
   const endState = tasksReducer(
     startState,
-    createTaskAC({
+    createTaskTC({
       todolistId: "todolistId2",
       title: "juice",
     }),
