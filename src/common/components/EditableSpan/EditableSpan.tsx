@@ -34,7 +34,6 @@ export const EditableSpan = ({ value, onChange, disabled }: Props) => {
           size={"small"}
           onChange={changeTitle}
           onBlur={turnOffEditMode}
-          disabled={disabled}
           autoFocus
         />
       ) : (
